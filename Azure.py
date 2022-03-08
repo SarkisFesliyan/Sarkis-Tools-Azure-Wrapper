@@ -273,7 +273,7 @@ class Azure:
 
         return response
 
-        def get_group_by_id(self, group_id, header=None):
+    def get_group_by_id(self, group_id, header=None):
         url = f'https://graph.microsoft.com/v1.0//groups/{group_id}/members'
         header = self._set_header(header)
         # Required for this url

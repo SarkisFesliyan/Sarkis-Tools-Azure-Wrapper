@@ -1,6 +1,7 @@
+import json
+from urllib.parse import quote_plus
 import requests
 import msal
-
 
 class Azure:
 

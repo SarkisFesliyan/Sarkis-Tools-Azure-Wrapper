@@ -271,3 +271,59 @@ class Azure:
                                                                                 group_response else None
 
         return response
+
+        def get_group_by_id(self, group_id, header=None):
+        url = f'https://graph.microsoft.com/v1.0//groups/{group_id}/members'
+        header = self._set_header(header)
+        # Required for this url
+        header['ConsistencyLevel'] = 'Eventual'
+
+        # Make initial request
+        response = requests.get(url, headers=header).json()
+
+        return response
+
+    def add_user_to_group(self, group_id, user_email, header=None):
+        """ Takes user email or ID"""
+
+        header = self._set_header(header)
+        # Required for this url
+        header['ConsistencyLevel'] = 'Eventual'
+        header['Content-type'] = "application/json"
+
+        if type(user_email) == str:
+            url = f"https://graph.microsoft.com/v1.0/groups/{group_id}/members/$ref"
+            payload = {"@odata.id": "https://graph.microsoft.com/v1.0/users/" + quote_plus(user_email)}
+            response = requests.post(url, headers=header, data=json.dumps(payload))
+
+            """
+            Not sure what specific permission this needs to work, commenting out for now
+            https://docs.microsoft.com/en-us/graph/api/group-post-members?view=graph-rest-1.0&tabs=http
+            elif type(user_email) == list:
+                url = f"https://graph.microsoft.com/v1.0/groups/{group_id}"
+                payload = {"members@odata.bind": []}
+                for user in user_email:
+                    payload["members@odata.bind"].append("https://graph.microsoft.com/v1.0/users/" + quote_plus(user))
+                response = requests.patch(url, headers=header, data=json.dumps(payload))
+            """
+        else:
+            return {"Error:": "User email requires string value"}
+
+        return response
+
+    def remove_user_from_group(self, group_id, user_email, header=None):
+        """ Takes user email or ID"""
+
+        header = self._set_header(header)
+        # Required for this url
+        header['ConsistencyLevel'] = 'Eventual'
+        header['Content-type'] = "application/json"
+
+        if type(user_email) == str:
+            url = f"https://graph.microsoft.com/v1.0/groups/{group_id}/members/{quote_plus(user_email)}/$ref"
+            response = requests.delete(url, headers=header)
+
+        else:
+            return {"Error:": "User email requires string value"}
+
+        return response

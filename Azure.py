@@ -465,14 +465,3 @@ class Azure:
         response = requests.get(url, headers=header)
         return response.json()
 
-    def mem_set_device_category(self, header=None):
-        """ No paramaters needed"""
-
-        header = self._set_header(header)
-        # Required for this url
-        header['ConsistencyLevel'] = 'Eventual'
-        header['Content-type'] = "application/json"
-
-        url = "https://graph.microsoft.com/v1.0//deviceManagement/deviceManagementScripts/{deviceManagementScriptId}/deviceRunStates/{deviceManagementScriptDeviceStateId}/managedDevice/deviceCategory"
-        response = requests.patch(url, data=,headers=header)
-        return response.json()
